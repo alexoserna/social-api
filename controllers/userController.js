@@ -93,3 +93,22 @@ exports.addFriend = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
+// Remove a friend from a user's friend list
+exports.removeFriend = async (req, res) => {
+  const { userId, friendId } = req.params;
+  try {
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { friends: friendId } },
+      { new: true }
+    );
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
